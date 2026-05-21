@@ -1,0 +1,31 @@
+#include<iostream>
+#include<math.h>
+using namespace std;
+int main()
+{
+    //public
+    int p=7;
+    int g=3;// g<p
+
+    //Alice
+    int a=2;// a<p
+    int A= pow(g,a);
+    A=A%p;
+
+    //Bob
+    int b=4;// b<p
+    int B=pow(g,b);
+    B=B%p;
+
+    //Alice (k)
+    int k_a=pow(B,a);
+    k_a=k_a%p;
+
+    //Bob (k)
+    int k_b=pow(A,b);
+    k_b=k_b%p;
+
+    cout<<k_a<<" "<<k_b;
+
+    return 0;
+}
