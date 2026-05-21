@@ -1,0 +1,75 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+// Extended Euclidean Algorithm (to find private key 'd')
+int mod_inverse(int e, int phi) {
+    int original_phi = phi; 
+    int y = 0, x = 1;
+    
+    if (phi == 1) return 0;
+
+    while (e > 1) {
+        int quotient = e / phi;
+        int temp = phi;
+        
+        // Update phi and e
+        phi = e % phi;
+        e = temp;
+
+        // Update y and x
+        temp = y;
+        y = x - quotient * y;
+        x = temp;
+    }
+
+    if (x < 0) {
+        x += original_phi;
+    }
+
+    return x;
+}
+
+int main()
+{
+    int plainText = 21; // Original message to send
+
+    // ================= ALICE (Sender) =================
+    int p_alice = 3, q_alice = 11;
+    int n_alice = p_alice * q_alice;
+    int phi_alice = (p_alice - 1) * (q_alice - 1); 
+    
+    int e_alice = 3; // Alice's Public Key
+    cout << "Alice GCD: " << __gcd(e_alice, phi_alice) << endl;
+    int d_alice = mod_inverse(e_alice, phi_alice); // Alice's Private Key
+
+
+    // ================= BOB (Receiver) =================
+    int p_bob = 3, q_bob = 23;
+    int n_bob = p_bob * q_bob;
+    int phi_bob = (p_bob - 1) * (q_bob - 1);
+    
+    int e_bob = 5; // Bob's Public Key
+    cout << "Bob GCD: " << __gcd(e_bob, phi_bob) << endl;
+    int d_bob = mod_inverse(e_bob, phi_bob); // Bob's Private Key
+    
+    cout << "Bob's Private Key (d): " << d_bob << endl;
+    cout << "\nPlain Text (PT): " << plainText << endl;
+
+
+    // ================= ENCRYPTION =================
+    // Alice encrypts the message using Bob's Public Key (e_bob, n_bob)
+    long long int cipherText = pow(plainText, e_bob);
+    cipherText = cipherText % n_bob;
+    
+    cout << "Cipher Text (CT): " << cipherText << endl;
+
+
+    // ================= DECRYPTION =================
+    // Bob decrypts the message using his Private Key (d_bob, n_bob)
+    long long int decryptedText = pow(cipherText, d_bob);
+    decryptedText = decryptedText % n_bob;
+    
+    cout << "Decrypted Message: " << decryptedText << endl;
+
+    return 0;
+}
